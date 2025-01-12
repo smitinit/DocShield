@@ -15,6 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardDescription } from "@/components/ui/card";
 import { Input } from "./components/ui/input";
 
+// ------------------------------ Initiate -> App ------------------------------
+
 function App() {
   return (
     <div className="flex h-[100vh] justify-center items-center">
@@ -24,7 +26,7 @@ function App() {
 }
 export default App;
 
-// ---------------------------- Resizable Panel ----------------------------
+// ------------------------------ Resizable Panel-Main App ---------------------
 
 function Resizable() {
   return (
@@ -33,7 +35,6 @@ function Resizable() {
       className="w-full max-w-[90vw] max-h-[80vh] min-h-[50vh] border-[2px] border-slate-400"
     >
       <ResizablePanel defaultSize={60}>
-        {" "}
         {/*  minSize={40} */}
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={40} minSize={30}>
@@ -84,7 +85,7 @@ function Resizable() {
                     className="flex flex-col gap-3  p-4 overflow-auto"
                   >
                     {insights.map((insight, index) => (
-                      <CardOfInsights key={index} content={insight.value} />
+                      <Insights key={index} content={insight.value} />
                     ))}
                   </div>
                 </TabsContent>
@@ -103,7 +104,7 @@ function Resizable() {
   );
 }
 
-// ---------------------------- Upload Section ----------------------------
+// ------------------------------ Upload Section -------------------------------
 
 function Upload() {
   return (
@@ -125,7 +126,7 @@ function Upload() {
   );
 }
 
-// ---------------------------- Fruad Table Section ----------------------------
+// ------------------------------ Fruad Table Section --------------------------
 
 const fraudSignalsData = [
   {
@@ -163,7 +164,7 @@ function FruadTable() {
   );
 }
 
-// ---------------------------- Card Section ----------------------------
+// ------------------------------ Insights Section -----------------------------
 
 const insights = [
   { value: "SBIN000130" },
@@ -176,7 +177,7 @@ const insights = [
   { value: "124788" },
 ];
 
-function CardOfInsights({ content }: { content: string }) {
+function Insights({ content }: { content: string }) {
   return (
     <Card className="flex w-full p-4 bg-white shadow-sm rounded-lg border border-gray-200 ">
       <CardDescription className="text-lg font-medium text-gray-800 shadow-sm">
@@ -188,8 +189,7 @@ function CardOfInsights({ content }: { content: string }) {
   );
 }
 
-// ---------------------------- Fraud Analysis Section ----------------------------
-
+// ------------------------------ Fraud Analysis Section -----------------------
 function FraudAnalysis() {
   return (
     <div
