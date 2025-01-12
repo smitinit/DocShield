@@ -2,13 +2,13 @@
 
 # Test server for reference
 
-# Steps
+# Follow ups
 
 ```bash
  git clone https://github.com/smitinit/DocShield.git
 ```
 
-# Frontend
+## Frontend
 
 ### First terminal
 
@@ -18,7 +18,7 @@
  npm run dev
 ```
 
-# Server
+## Server
 
 ### Second terminal (make sure you are in cloned repo folder)
 
