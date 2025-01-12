@@ -14,13 +14,72 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardDescription } from "@/components/ui/card";
 import { Input } from "./components/ui/input";
+import { Skeleton } from "./components/ui/skeleton";
+
+import { useEffect, useState } from "react";
+
+// Types
+interface Insight {
+  value: string;
+}
+
+interface FraudData {
+  id: number;
+  signal: string;
+  status: string;
+}
 
 // ------------------------------ Initiate -> App ------------------------------
 
 function App() {
+  const [insights, setInsights] = useState<Insight[]>([]);
+  const [fraudData, setFraudData] = useState<FraudData[]>([]);
+  const [loadingInsights, setLoadingInsights] = useState<boolean>(true);
+  const [loadingFraudData, setLoadingFraudData] = useState<boolean>(true);
+
+  function fetchInsights() {
+    setLoadingInsights(true);
+    fetch("api/insights")
+      .then((res) => res.json())
+      .then((data: Insight[]) => {
+        if (data) {
+          // fancy loading of 5s
+          setInterval(() => {
+            setInsights(data);
+            setLoadingInsights(false);
+          }, 5000);
+        }
+      });
+  }
+
+  function fetchFraudTableData() {
+    setLoadingFraudData(true);
+    fetch("api/fraud-data")
+      .then((res) => res.json())
+      .then((data: FraudData[]) => {
+        if (data) {
+          // fancy loading of 5s
+          setInterval(() => {
+            setFraudData(data);
+            setLoadingFraudData(false);
+          }, 5000);
+        }
+      });
+  }
+
+  useEffect(() => {
+    fetchInsights();
+    fetchFraudTableData();
+  }, []);
+
   return (
     <div className="flex h-[100vh] justify-center items-center">
-      <Resizable />
+      <Resizable
+        insights={insights}
+        fraudData={fraudData}
+        loadingInsights={loadingInsights}
+        loadingFraudData={loadingFraudData}
+      />
     </div>
   );
 }
@@ -28,14 +87,25 @@ export default App;
 
 // ------------------------------ Resizable Panel-Main App ---------------------
 
-function Resizable() {
+interface ResizableProps {
+  insights: Insight[];
+  fraudData: FraudData[];
+  loadingInsights: boolean;
+  loadingFraudData: boolean;
+}
+
+function Resizable({
+  insights,
+  fraudData,
+  loadingFraudData,
+  loadingInsights,
+}: ResizableProps) {
   return (
     <ResizablePanelGroup
       direction="vertical"
       className="w-full max-w-[90vw] max-h-[80vh] min-h-[50vh] border-[2px] border-slate-400"
     >
       <ResizablePanel defaultSize={60}>
-        {/*  minSize={40} */}
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={40} minSize={30}>
             <Upload />
@@ -53,7 +123,7 @@ function Resizable() {
                     value="Table"
                     className="flex-1 bg-white text-black data-[state=active]:bg-black data-[state=active]:text-white"
                   >
-                    Table
+                    Tests
                   </TabsTrigger>
                   <TabsTrigger
                     value="OCR"
@@ -72,7 +142,10 @@ function Resizable() {
                     style={{ height: "calc(100% - 1rem)" }}
                     className="h-full overflow-auto px-4 pb-3"
                   >
-                    <FruadTable />
+                    <FraudTable
+                      fraudData={fraudData}
+                      loadingFraudData={loadingFraudData}
+                    />
                   </div>
                 </TabsContent>
 
@@ -80,14 +153,10 @@ function Resizable() {
                   value="OCR"
                   style={{ height: "calc(100% - 1rem)" }}
                 >
-                  <div
-                    style={{ height: "calc(100% - 1rem)" }}
-                    className="flex flex-col gap-3  p-4 overflow-auto"
-                  >
-                    {insights.map((insight, index) => (
-                      <Insights key={index} content={insight.value} />
-                    ))}
-                  </div>
+                  <Insights
+                    content={insights}
+                    loadingInsights={loadingInsights}
+                  />
                 </TabsContent>
               </Tabs>
             </div>
@@ -126,39 +195,48 @@ function Upload() {
   );
 }
 
-// ------------------------------ Fruad Table Section --------------------------
+// ------------------------------ Fraud Table Section --------------------------
 
-const fraudSignalsData = [
-  {
-    id: 1,
-    signal: "Image Manipulation",
-    status: "POSSIBLE_IMAGE_MANIPULATION",
-  },
-  { id: 2, signal: "Is Identity Document", status: "PASS" },
-  { id: 3, signal: "Online Duplicate", status: "PASS" },
-  { id: 4, signal: "Photocopy Detection", status: "PASS" },
-  { id: 5, signal: "Suspicious Words", status: "PASS" },
-  { id: 5, signal: "Suspicious Words", status: "PASS" },
-];
-
-function FruadTable() {
+function FraudTable({
+  fraudData,
+  loadingFraudData,
+}: {
+  fraudData: FraudData[];
+  loadingFraudData: boolean;
+}) {
   return (
     <Table className="w-full">
       <TableHeader>
         <TableRow>
-          <TableHead className="text-center">Fraud</TableHead>
-          <TableHead className="text-center">Status</TableHead>
+          <TableHead className="text-center" key="fraud">
+            Fraud
+          </TableHead>
+          <TableHead className="text-center" key="status">
+            Status
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {fraudSignalsData.map((fraud) => (
-          <TableRow key={fraud.id}>
-            <TableCell className="font-medium text-center">
-              {fraud.signal}
-            </TableCell>
-            <TableCell className="text-center">{fraud.status}</TableCell>
-          </TableRow>
-        ))}
+        {fraudData &&
+          fraudData.map((fraud) => (
+            <TableRow key={fraud.id}>
+              <TableCell className="font-medium text-center">
+                {fraud.signal}
+              </TableCell>
+              <TableCell className="text-center">{fraud.status}</TableCell>
+            </TableRow>
+          ))}
+        {loadingFraudData &&
+          Array.from({ length: 5 }, (_, i: number) => (
+            <TableRow key={i}>
+              <TableCell className="font-medium text-center">
+                <Skeleton className="w-full p-3 h-6 rounded-full" />
+              </TableCell>
+              <TableCell className="text-center">
+                <Skeleton className="w-full p-2 h-6 rounded-full" />
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );
@@ -166,30 +244,46 @@ function FruadTable() {
 
 // ------------------------------ Insights Section -----------------------------
 
-const insights = [
-  { value: "SBIN000130" },
-  { value: "Akash Verma" },
-  { value: "Mumbai Main Branch City Plaza" },
-  { value: "Mumbai" },
-  { value: "HATE BAN" },
-  { value: "Enabled" },
-  { value: "124788" },
-  { value: "124788" },
-];
-
-function Insights({ content }: { content: string }) {
+function Insights({
+  content,
+  loadingInsights,
+}: {
+  content: Insight[];
+  loadingInsights: boolean;
+}) {
   return (
-    <Card className="flex w-full p-4 bg-white shadow-sm rounded-lg border border-gray-200 ">
-      <CardDescription className="text-lg font-medium text-gray-800 shadow-sm">
-        <CardDescription className="text-sm text-gray-600">
-          {content}
-        </CardDescription>
-      </CardDescription>
-    </Card>
+    <div
+      style={{ height: "calc(100% - 1rem)" }}
+      className="flex flex-col gap-3 p-4 overflow-auto"
+    >
+      {content &&
+        content.map((insight, i: number) => (
+          <Card
+            className="flex w-full p-4 bg-white shadow-sm rounded-lg border border-gray-200"
+            key={i}
+          >
+            <CardDescription className="text-sm font-medium text-gray-600">
+              {insight.value}
+            </CardDescription>
+          </Card>
+        ))}
+      {loadingInsights &&
+        Array.from({ length: 5 }, (_, i: number) => (
+          <Card
+            className="flex w-full p-4 bg-white shadow-sm rounded-lg border border-gray-200"
+            key={i}
+          >
+            <CardDescription className="text-sm text-gray-600 w-full ">
+              <Skeleton className="w-[50%] p-2 h-6 rounded-full" />
+            </CardDescription>
+          </Card>
+        ))}
+    </div>
   );
 }
 
 // ------------------------------ Fraud Analysis Section -----------------------
+
 function FraudAnalysis() {
   return (
     <div
