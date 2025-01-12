@@ -1,1 +1,1 @@
-# Base Starter Frontend Templete
+# Base Starter Frontend Template
