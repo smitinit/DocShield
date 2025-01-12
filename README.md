@@ -10,12 +10,12 @@
 # Frontend
 ### First terminal
  ```bash
-  cd [cloned repo folder folder] (if not in clonned repo folder then this)
+  cd [cloned repo folder folder] (if not in cloned repo folder then this)
   npm install
   npm run dev
 ```
 # Server
-### Second terminal (make sure you are in clonned repo folder)
+### Second terminal (make sure you are in cloned repo folder)
 ```bash
   cd test-server
   npm install
