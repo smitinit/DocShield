@@ -30,4 +30,4 @@
 
 ## Done, now open http://localhost:5173/
 
-###### This all shit is for harshil 😂
+###### This all shit, is for HARSHIL 😂
