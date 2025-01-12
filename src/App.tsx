@@ -285,13 +285,17 @@ function Insights({
 // ------------------------------ Fraud Analysis Section -----------------------
 
 function FraudAnalysis() {
+  // const position: number = 20; // for color meter as an example
+  const [position, setPosition] = useState<number>(0); //dynamic af
+
   return (
     <div
       style={{ height: "calc(100% - 1rem)" }}
       className="flex flex-col p-4 m-4 bg-white overflow-auto"
     >
       <h1 className="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl mb-4">
-        Fraud Analysis for the Given Document
+        Fraud Analysis for the Given Document (
+        <small>Color meter at bottom...</small>)
       </h1>
 
       <h2 className="mt-6 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight">
@@ -329,6 +333,58 @@ function FraudAnalysis() {
         <li>Check the student ID number with SVIT's records.</li>
         <li>Confirm the details with the individual named on the document.</li>
       </ul>
+
+      {/* color meter for testing  */}
+
+      <h1 className="mt-10 scroll-m-20 border-b border-t pt-4 pb-4 text-3xl font-semibold tracking-tight flex flex-row justify-evenly">
+        Color-Meter Demo
+        <div>
+          <span className="text-xl flex gap-4">
+            Tweek to see changes :-
+            <Input
+              onChange={(e) => setPosition(+e.target.value)}
+              placeholder="position: number [0 - 100]"
+              className="w-fit"
+            />
+          </span>
+        </div>
+      </h1>
+      <div className="flex  justify-center mt-4 p-4  gap-4">
+        <ColorMeterForAValue position={position} />
+      </div>
     </div>
+  );
+}
+
+// ------------------------------ ColorMeter Section ---------------------------
+
+function ColorMeterForAValue({ position = 0 }: { position: number }) {
+  const safePosition = Math.min(position, 100);
+  return (
+    <>
+      <div className="relative w-72 ">
+        <div className="flex rounded-full overflow-hidden w-full h-8 text-center">
+          <div className="bg-green-500 w-1/5"></div>
+          <div className="bg-yellow-300 w-1/5"></div>
+          <div className="bg-amber-400 w-1/5"></div>
+          <div className="bg-orange-400 w-1/5"></div>
+          <div className="bg-red-500 w-1/5"></div>
+        </div>
+
+        <div
+          className="absolute -top-[0.4rem] left-4 rotate-180 transition-all ease-in "
+          style={{
+            // prettier-ignore
+            left: `${
+              (safePosition !== 0 && safePosition !== 100 && `calc(${safePosition}% - 3%)`) ||
+              (safePosition === 0 && `calc(${safePosition}%)`) ||
+              (safePosition === 100 && `calc(${safePosition}% - 6%)`)
+            }`,
+          }}
+        >
+          <div className="w-0 h-0 border-l-8 border-r-8 border-b-[16px] border-l-transparent border-r-transparent border-b-black"></div>
+        </div>
+      </div>
+    </>
   );
 }
