@@ -30,4 +30,4 @@
 
 ## Done, now open http://localhost:5173/
 
-###### This readme shit, is for HARSHIL 😂
+###### This readme shit is for HARSHIL 😂
