@@ -143,10 +143,13 @@ function FT({
                   key={row.id}
                   className="border-b last:border-none hover:bg-gray-50"
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell, i: number) => (
                     <td
                       key={cell.id}
-                      className="px-4 py-2 text-center text-gray-600"
+                      className="px-4 py-2 text-center text-gray-900"
+                      style={{
+                        fontWeight: `${i === 0 ? "bold" : "normal"}`,
+                      }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

@@ -323,7 +323,7 @@ function ColorMeterForAValue({ position = 0 }: { position: number }) {
           style={{
             // prettier-ignore
             left: `${
-              (safePosition !== 0 && safePosition !== 100 && `calc(${safePosition}% - 3%)`) ||
+              (safePosition !== 0 && safePosition !== 100 && safePosition > 3 && `calc(${safePosition}% - 3%)`) ||
               (safePosition === 0 && `calc(${safePosition}%)`) ||
               (safePosition === 100 && `calc(${safePosition}% - 6%)`)
             }`,
