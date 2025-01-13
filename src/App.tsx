@@ -3,27 +3,21 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardDescription } from "@/components/ui/card";
 import { Input } from "./components/ui/input";
 import { Skeleton } from "./components/ui/skeleton";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+import FT from "./FraudTableComp";
 
 // Types
 interface Insight {
   value: string;
 }
 
-interface FraudData {
+export interface FraudData {
   id: number;
   signal: string;
   status: string;
@@ -37,40 +31,40 @@ function App() {
   const [loadingInsights, setLoadingInsights] = useState<boolean>(true);
   const [loadingFraudData, setLoadingFraudData] = useState<boolean>(true);
 
-  function fetchInsights() {
+  const fetchInsights = useCallback(() => {
+    if (insights.length > 0) return;
     setLoadingInsights(true);
     fetch("api/insights")
       .then((res) => res.json())
       .then((data: Insight[]) => {
         if (data) {
-          // fancy loading of 5s
-          setInterval(() => {
+          setTimeout(() => {
             setInsights(data);
             setLoadingInsights(false);
-          }, 5000);
+          }, 6000);
         }
       });
-  }
+  }, [insights]);
 
-  function fetchFraudTableData() {
+  const fetchFraudTableData = useCallback(() => {
+    if (fraudData.length > 0) return;
     setLoadingFraudData(true);
     fetch("api/fraud-data")
       .then((res) => res.json())
       .then((data: FraudData[]) => {
         if (data) {
-          // fancy loading of 5s
-          setInterval(() => {
+          setTimeout(() => {
             setFraudData(data);
             setLoadingFraudData(false);
-          }, 5000);
+          }, 6000);
         }
       });
-  }
+  }, [fraudData]);
 
   useEffect(() => {
     fetchInsights();
     fetchFraudTableData();
-  }, []);
+  }, [fetchInsights, fetchFraudTableData]);
 
   return (
     <div className="flex h-[100vh] justify-center items-center">
@@ -142,7 +136,7 @@ function Resizable({
                     style={{ height: "calc(100% - 1rem)" }}
                     className="h-full overflow-auto px-4 pb-3"
                   >
-                    <FraudTable
+                    <FT
                       fraudData={fraudData}
                       loadingFraudData={loadingFraudData}
                     />
@@ -192,53 +186,6 @@ function Upload() {
 
       <p className="mt-4 text-slate-500 text-sm">No file chosen</p>
     </div>
-  );
-}
-
-// ------------------------------ Fraud Table Section --------------------------
-
-function FraudTable({
-  fraudData,
-  loadingFraudData,
-}: {
-  fraudData: FraudData[];
-  loadingFraudData: boolean;
-}) {
-  return (
-    <Table className="w-full">
-      <TableHeader>
-        <TableRow>
-          <TableHead className="text-center" key="fraud">
-            Fraud
-          </TableHead>
-          <TableHead className="text-center" key="status">
-            Status
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {fraudData &&
-          fraudData.map((fraud) => (
-            <TableRow key={fraud.id}>
-              <TableCell className="font-medium text-center">
-                {fraud.signal}
-              </TableCell>
-              <TableCell className="text-center">{fraud.status}</TableCell>
-            </TableRow>
-          ))}
-        {loadingFraudData &&
-          Array.from({ length: 5 }, (_, i: number) => (
-            <TableRow key={i}>
-              <TableCell className="font-medium text-center">
-                <Skeleton className="w-full p-3 h-6 rounded-full" />
-              </TableCell>
-              <TableCell className="text-center">
-                <Skeleton className="w-full p-2 h-6 rounded-full" />
-              </TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
   );
 }
 
@@ -388,3 +335,53 @@ function ColorMeterForAValue({ position = 0 }: { position: number }) {
     </>
   );
 }
+
+// ------------------------------ Fraud Table Section --------------------------
+
+// function FraudTable({
+//   fraudData,
+//   loadingFraudData,
+// }: {
+//   fraudData: FraudData[];
+//   loadingFraudData: boolean;
+// }) {
+//   const chosenOnes = new Set(fraudData.map((f) => f.status));
+//   console.log(chosenOnes);
+
+//   return (
+//     <Table className="w-full">
+//       <TableHeader>
+//         <TableRow>
+//           <TableHead className="text-center" key="fraud">
+//             Fraud
+//           </TableHead>
+//           <TableHead className="text-center" key="status">
+//             Status
+//           </TableHead>
+//         </TableRow>
+//       </TableHeader>
+//       <TableBody>
+//         {fraudData &&
+//           fraudData.map((fraud) => (
+//             <TableRow key={fraud.id}>
+//               <TableCell className="font-medium text-center">
+//                 {fraud.signal}
+//               </TableCell>
+//               <TableCell className="text-center">{fraud.status}</TableCell>
+//             </TableRow>
+//           ))}
+//         {loadingFraudData &&
+//           Array.from({ length: 5 }, (_, i: number) => (
+//             <TableRow key={i}>
+//               <TableCell className="font-medium text-center">
+//                 <Skeleton className="w-full p-3 h-6 rounded-full " />
+//               </TableCell>
+//               <TableCell className="text-center">
+//                 <Skeleton className="w-full p-2 h-6 rounded-full" />
+//               </TableCell>
+//             </TableRow>
+//           ))}
+//       </TableBody>
+//     </Table>
+//   );
+// }
