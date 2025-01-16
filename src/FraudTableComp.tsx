@@ -32,13 +32,14 @@ const columns: ColumnDef<FraudData>[] = [
     accessorKey: "signal",
     header: ({ column }) => {
       return (
-        <Button
-          variant="outline"
+        <span
+          // variant="outline"
           className="text-left"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Fraud <ArrowUpDown />
-        </Button>
+          Fraud
+          {/* <ArrowUpDown /> */}
+        </span>
       );
     },
     cell: ({ row }) => <div>{row.getValue("signal")}</div>,
@@ -58,7 +59,7 @@ function StatusDropdown({ column }: { column: ColumnDef<FraudData> }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="ghost" size="sm">
           Status
           <FilterIcon />
         </Button>
@@ -87,7 +88,8 @@ function FT({
   fraudData: FraudData[];
   loadingFraudData: boolean;
 }) {
-  const pro = true;
+  // let pro = false;
+  const [pro, setPro] = useState<boolean>(false);
 
   fraudSignalsData = useMemo(() => {
     if (!loadingFraudData) {
@@ -116,13 +118,16 @@ function FT({
 
   return (
     <div className="w-full">
-      <div className="py-4 flex">
+      <div className="py-4 flex justify-around">
         <Input
           placeholder="Search fraud signals..."
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm w-full sm:max-w-xs"
         />
+        <Button variant="ghost" onClick={() => setPro((prev) => !prev)}>
+          {pro ? "  Premium model" : "Freemium model"}
+        </Button>
       </div>
       <div className="rounded-md border overflow-hidden">
         <table className="w-full table-fixed border-collapse">
