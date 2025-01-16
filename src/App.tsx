@@ -111,7 +111,7 @@ function Resizable({
           <ResizablePanel defaultSize={40} minSize={30}>
             <Upload />
           </ResizablePanel>
-          <ResizableHandle className="bg-gray-300 hover:bg-gray-500" />
+          {/* <ResizableHandle className="bg-gray-300 hover:bg-gray-500" /> */}
           <ResizablePanel
             defaultSize={60}
             minSize={50}
@@ -178,14 +178,29 @@ function Resizable({
 
 function Upload() {
   return (
-    <div className="flex flex-col items-center justify-center p-6 bg-white text-slate-900 rounded-lg shadow-lg w-full h-full max-w-full">
+    // <div className="flex flex-col items-center justify-center p-6 bg-white text-slate-900 rounded-lg shadow-lg w-full h-full max-w-full">
+    //   <h2 className="text-xl font-semibold text-slate-900 mb-4">
+    //     Upload Your File
+    //   </h2>
+
+    //   <label
+    //     htmlFor="file-upload"
+    //     className="w-full h-full flex items-center justify-center border-2 border-slate-300 rounded-lg bg-slate-100 cursor-pointer hover:border-slate-500 transition-all"
+    //   >
+    //     <Input type="file" id="file-upload" className="hidden" />
+    //     <span className="text-center text-slate-600">Choose File</span>
+    //   </label>
+
+    //   <p className="mt-4 text-slate-500 text-sm">No file chosen</p>
+    // </div>
+    <div className="flex flex-col items-center justify-center p-6 bg-white text-slate-900 rounded-lg shadow-lg w-full h-full max-w-full min-h-[350px]">
       <h2 className="text-xl font-semibold text-slate-900 mb-4">
         Upload Your File
       </h2>
 
       <label
         htmlFor="file-upload"
-        className="w-full h-full flex items-center justify-center border-2 border-slate-300 rounded-lg bg-slate-100 cursor-pointer hover:border-slate-500 transition-all"
+        className="w-full min-h-[80%] flex items-center justify-center border-2 border-slate-300 rounded-lg bg-slate-100 cursor-pointer hover:border-slate-500 transition-all"
       >
         <Input type="file" id="file-upload" className="hidden" />
         <span className="text-center text-slate-600">Choose File</span>
