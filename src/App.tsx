@@ -318,7 +318,7 @@ function ColorMeterForAValue({ position = 0 }: { position: number }) {
     <>
       <div className="relative w-72 ">
         <div className="flex rounded-full overflow-hidden w-full h-8 text-center">
-          <div className="bg-green-500 w-1/5"></div>
+          <div className="bg-green-500 w-1/5 "></div>
           <div className="bg-yellow-300 w-1/5"></div>
           <div className="bg-amber-400 w-1/5"></div>
           <div className="bg-orange-400 w-1/5"></div>
@@ -326,17 +326,20 @@ function ColorMeterForAValue({ position = 0 }: { position: number }) {
         </div>
 
         <div
-          className="absolute -top-[0.4rem] left-4 rotate-180 transition-all ease-in "
+          className="absolute -top-[0.4rem] rotate-180 transition-all ease-in "
           style={{
             // prettier-ignore
-            left: `${
-              (safePosition !== 0 && safePosition !== 100 && safePosition > 3 && `calc(${safePosition}% - 3%)`) ||
-              (safePosition === 0 && `calc(${safePosition}%)`) ||
-              (safePosition === 100 && `calc(${safePosition}% - 6%)`)
+            left: `${`calc(${safePosition}% - 8px)`
+              // (safePosition !== 0 && safePosition !== 100 && safePosition > 3 && `calc(${safePosition}% - 3%)`) ||
+              // (safePosition === 0 && `calc(${safePosition}%)`) ||
+              // (safePosition === 100 && `calc(${safePosition}% - 6%)`)
             }`,
           }}
         >
-          <div className="w-0 h-0 border-l-8 border-r-8 border-b-[16px] border-l-transparent border-r-transparent border-b-black"></div>
+          {/* <div className="w-0 h-0 border-l-8 border-r-8 border-b-[16px] border-l-transparent border-r-transparent border-b-black"></div> */}
+          <div className="relative w-0 h-0 border-l-8 border-r-8 border-b-[16px] border-l-transparent border-r-transparent border-b-black ">
+            {/* <div className="absolute top-[-20px] left-[-0.5px] w-[1.2px] h-[19px] bg-slate-600"></div> */}
+          </div>
         </div>
       </div>
     </>
