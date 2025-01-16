@@ -289,8 +289,8 @@ function FraudAnalysis() {
           <span className="text-xl flex gap-4">
             Tweek to see changes :-
             <Input
-              onChange={(e) => setPosition(+e.target.value)}
-              placeholder="position: number [0 - 100]"
+              onChange={(e) => setPosition(+e.target.value * 100)}
+              placeholder="position -> [0 - 0.1 - 0.99 - 1]%"
               className="w-fit"
             />
           </span>
