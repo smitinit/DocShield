@@ -24,7 +24,7 @@ import {
 
 import { FraudData } from "./App";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 let fraudSignalsData: FraudData[] = [];
 const columns: ColumnDef<FraudData>[] = [
@@ -87,10 +87,19 @@ function FT({
   fraudData: FraudData[];
   loadingFraudData: boolean;
 }) {
-  if (!loadingFraudData) fraudSignalsData = fraudData;
+  const pro = true;
+
+  fraudSignalsData = useMemo(() => {
+    if (!loadingFraudData) {
+      return pro ? fraudData : fraudData.slice(0, 5);
+    } else {
+      return fraudData;
+    }
+  }, [fraudData, loadingFraudData, pro]);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>("");
+
   const table = useReactTable({
     data: fraudSignalsData,
     columns,
@@ -115,7 +124,7 @@ function FT({
           className="max-w-sm w-full sm:max-w-xs"
         />
       </div>
-      <div className="rounded-md border overflow-x-auto">
+      <div className="rounded-md border overflow-hidden">
         <table className="w-full table-fixed border-collapse">
           <thead className="bg-gray-100">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -145,11 +154,9 @@ function FT({
                 >
                   {row.getVisibleCells().map((cell, i: number) => (
                     <td
-                      key={cell.id}
+                      key={cell.id || i}
                       className="px-4 py-2 text-center text-gray-900"
-                      style={{
-                        fontWeight: `${i === 0 ? "bold" : "normal"}`,
-                      }}
+                      style={{ fontWeight: `${i === 0 ? "bold" : "normal"}` }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -177,3 +184,53 @@ function FT({
 }
 
 export default FT;
+
+// ------------------------------ Fraud Table Section --------------------------
+
+// function FraudTable({
+//   fraudData,
+//   loadingFraudData,
+// }: {
+//   fraudData: FraudData[];
+//   loadingFraudData: boolean;
+// }) {
+//   const chosenOnes = new Set(fraudData.map((f) => f.status));
+//   console.log(chosenOnes);
+
+//   return (
+//     <Table className="w-full">
+//       <TableHeader>
+//         <TableRow>
+//           <TableHead className="text-center" key="fraud">
+//             Fraud
+//           </TableHead>
+//           <TableHead className="text-center" key="status">
+//             Status
+//           </TableHead>
+//         </TableRow>
+//       </TableHeader>
+//       <TableBody>
+//         {fraudData &&
+//           fraudData.map((fraud) => (
+//             <TableRow key={fraud.id}>
+//               <TableCell className="font-medium text-center">
+//                 {fraud.signal}
+//               </TableCell>
+//               <TableCell className="text-center">{fraud.status}</TableCell>
+//             </TableRow>
+//           ))}
+//         {loadingFraudData &&
+//           Array.from({ length: 5 }, (_, i: number) => (
+//             <TableRow key={i}>
+//               <TableCell className="font-medium text-center">
+//                 <Skeleton className="w-full p-3 h-6 rounded-full " />
+//               </TableCell>
+//               <TableCell className="text-center">
+//                 <Skeleton className="w-full p-2 h-6 rounded-full" />
+//               </TableCell>
+//             </TableRow>
+//           ))}
+//       </TableBody>
+//     </Table>
+//   );
+// }

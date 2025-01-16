@@ -8,7 +8,7 @@ import { Card, CardDescription } from "@/components/ui/card";
 import { Input } from "./components/ui/input";
 import { Skeleton } from "./components/ui/skeleton";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import FT from "./FraudTableComp";
 
@@ -30,6 +30,7 @@ function App() {
   const [fraudData, setFraudData] = useState<FraudData[]>([]);
   const [loadingInsights, setLoadingInsights] = useState<boolean>(true);
   const [loadingFraudData, setLoadingFraudData] = useState<boolean>(true);
+  const loadingTime = 0;
 
   const fetchInsights = useCallback(() => {
     if (insights.length > 0) return;
@@ -41,7 +42,7 @@ function App() {
           setTimeout(() => {
             setInsights(data);
             setLoadingInsights(false);
-          }, 6000);
+          }, loadingTime);
         }
       });
   }, [insights]);
@@ -56,7 +57,7 @@ function App() {
           setTimeout(() => {
             setFraudData(data);
             setLoadingFraudData(false);
-          }, 6000);
+          }, loadingTime);
         }
       });
   }, [fraudData]);
@@ -66,11 +67,14 @@ function App() {
     fetchFraudTableData();
   }, [fetchInsights, fetchFraudTableData]);
 
+  const memoizedFraudData = useMemo(() => fraudData, [fraudData]);
+  const memoizedInsights = useMemo(() => insights, [insights]);
+
   return (
     <div className="flex h-[100vh] justify-center items-center">
       <Resizable
-        insights={insights}
-        fraudData={fraudData}
+        insights={memoizedInsights}
+        fraudData={memoizedFraudData}
         loadingInsights={loadingInsights}
         loadingFraudData={loadingFraudData}
       />
@@ -94,6 +98,9 @@ function Resizable({
   loadingFraudData,
   loadingInsights,
 }: ResizableProps) {
+  const memoizedInsights = useMemo(() => insights, [insights]);
+  const memoizedFraudData = useMemo(() => fraudData, [fraudData]);
+
   return (
     <ResizablePanelGroup
       direction="vertical"
@@ -137,7 +144,7 @@ function Resizable({
                     className="h-full overflow-auto px-4 pb-3"
                   >
                     <FT
-                      fraudData={fraudData}
+                      fraudData={memoizedFraudData}
                       loadingFraudData={loadingFraudData}
                     />
                   </div>
@@ -148,7 +155,7 @@ function Resizable({
                   style={{ height: "calc(100% - 1rem)" }}
                 >
                   <Insights
-                    content={insights}
+                    content={memoizedInsights}
                     loadingInsights={loadingInsights}
                   />
                 </TabsContent>
@@ -335,53 +342,3 @@ function ColorMeterForAValue({ position = 0 }: { position: number }) {
     </>
   );
 }
-
-// ------------------------------ Fraud Table Section --------------------------
-
-// function FraudTable({
-//   fraudData,
-//   loadingFraudData,
-// }: {
-//   fraudData: FraudData[];
-//   loadingFraudData: boolean;
-// }) {
-//   const chosenOnes = new Set(fraudData.map((f) => f.status));
-//   console.log(chosenOnes);
-
-//   return (
-//     <Table className="w-full">
-//       <TableHeader>
-//         <TableRow>
-//           <TableHead className="text-center" key="fraud">
-//             Fraud
-//           </TableHead>
-//           <TableHead className="text-center" key="status">
-//             Status
-//           </TableHead>
-//         </TableRow>
-//       </TableHeader>
-//       <TableBody>
-//         {fraudData &&
-//           fraudData.map((fraud) => (
-//             <TableRow key={fraud.id}>
-//               <TableCell className="font-medium text-center">
-//                 {fraud.signal}
-//               </TableCell>
-//               <TableCell className="text-center">{fraud.status}</TableCell>
-//             </TableRow>
-//           ))}
-//         {loadingFraudData &&
-//           Array.from({ length: 5 }, (_, i: number) => (
-//             <TableRow key={i}>
-//               <TableCell className="font-medium text-center">
-//                 <Skeleton className="w-full p-3 h-6 rounded-full " />
-//               </TableCell>
-//               <TableCell className="text-center">
-//                 <Skeleton className="w-full p-2 h-6 rounded-full" />
-//               </TableCell>
-//             </TableRow>
-//           ))}
-//       </TableBody>
-//     </Table>
-//   );
-// }
